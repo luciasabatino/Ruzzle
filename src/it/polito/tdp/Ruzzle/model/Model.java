@@ -1,5 +1,6 @@
 package it.polito.tdp.Ruzzle.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.tdp.Ruzzle.db.DizionarioDAO;
@@ -20,6 +21,12 @@ public class Model {
 		this.dizionario = dao.listParola() ;
 		statusText.set(String.format("%d parole lette", this.dizionario.size())) ;
 	
+	}
+	
+	//Il model ha accesso alla word e può ricorsivamente andare a cercare le soluzioni possibili
+	public List<Pos> trovaParola(String parola){
+		Ricerca ricerca = new Ricerca();
+		return ricerca.trovaParola(parola, this.board);
 	}
 	
 	public void reset() {
@@ -43,6 +50,19 @@ public class Model {
 
 	public final void setStatusText(final String statusText) {
 		this.statusTextProperty().set(statusText);
+	}
+
+	public List<String> trovaTutte() {
+		List<String> trovate = new ArrayList<>();
+		for(String parola : dizionario) {
+			parola = parola.toUpperCase();
+			if(parola.length()>1) {
+			if(trovaParola(parola)!=null) {
+				trovate.add(parola);
+			}
+			}
+		}
+		return trovate;
 	}
 	
 

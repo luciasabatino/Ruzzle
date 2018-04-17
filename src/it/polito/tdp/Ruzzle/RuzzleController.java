@@ -6,6 +6,7 @@ package it.polito.tdp.Ruzzle;
 
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -15,6 +16,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 public class RuzzleController {
@@ -86,19 +88,65 @@ public class RuzzleController {
 
     @FXML // fx:id="let33"
     private Button let33; // Value injected by FXMLLoader
+    
+    @FXML
+    private TextArea txtResult;
 
     @FXML // fx:id="txtStatus"
     private Label txtStatus; // Value injected by FXMLLoader
 
     @FXML
     void handleProva(ActionEvent event) {
-
+    	String parola = txtParola.getText();
+    	
+    	if(parola.length()==0) {
+    		txtStatus.setText("ERORRE: parola vuota");
+    		return;
+    	}
+    	parola=parola.toUpperCase();
+    	
+    	//Controllo che ci siano caratteri solo A-Z
+    	if(!parola.matches("[A-Z]+")) {
+    		//Il metodo match delle stringhe controlla se la stringa è fatta secondo un certo pattern
+    		//Le parentesi quadre indicano i caratteri che possono comparire all'interno della stringa
+    		//Il + indica che ci sono lettere che possono essere ripetute una o più volte
+    		txtStatus.setText("ERRORE: caratteri non ammessi");
+    	}
+    	
+    	List<Pos> percorso = model.trovaParola(parola);
+    	
+    	//System.out.println(percorso);
+    	
+    	if(percorso!=null) {
+    	for(Button b : letters.values()) {
+    		b.setDefaultButton(false);
+    	}
+    	
+    	//Evidenzia i tasti utilizzati
+    	for(Pos p : percorso) {
+    		letters.get(p).setDefaultButton(true);
+    	}
+    	}
+    	else {
+    		txtStatus.setText("Parola non trovata");
+    	}
     }
     
     @FXML
     void handleReset(ActionEvent event) {
     	model.reset();
 
+    }
+    
+    @FXML
+    void handleRisolvi() {
+    	//Chiede al model tutte le soluzioni
+    	List<String> tutte = model.trovaTutte();
+    	txtResult.clear();
+    	txtResult.appendText(String.format("Trovate %d soluzioni\n", tutte.size()));
+    	for(String s : tutte) {
+    		txtResult.appendText(s+"\n");
+    	}
     }
 
 
@@ -152,10 +200,12 @@ public class RuzzleController {
     	this.letters.put(new Pos(3,3), let33) ;
 
     	for(Pos cell: m.getBoard().getPositions()) {
+    		//per ciascuna posizione prendo il bottone in quella posizione e il testo lo collego alla proprietà stringa corrispondente
+    		//alla stessa posizione all'interno della board
     		this.letters.get(cell).textProperty().bind(m.getBoard().getCellValueProperty(cell));
     	}
     	
-    	this.txtStatus.textProperty().bind(m.statusTextProperty());
+    	//this.txtStatus.textProperty().bind(m.statusTextProperty());
     	
     }
 }

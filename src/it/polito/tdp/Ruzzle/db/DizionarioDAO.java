@@ -17,6 +17,7 @@ public class DizionarioDAO {
 	public List<String> listParola() {
 		List<String> result = new ArrayList<>() ;
 		
+		//query che restituisce tutte le parole del dizionario
 		String query = "SELECT nome FROM parola ORDER BY nome" ;
 		
 		try {

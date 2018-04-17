@@ -15,6 +15,7 @@ import javafx.beans.property.StringProperty;
  */
 public class Board {
 	private List<Pos> positions;
+	//Mappa che mette in relazione la posizione con la stringa inserita in quella posizione
 	private Map<Pos, StringProperty> cells;
 
 	private int size;
@@ -69,6 +70,24 @@ public class Board {
 			String letter = Character.toString((char)('A'+random)) ;
 			this.cells.get(p).set(letter); 
 		}
+	}
+	
+	public List<Pos> getAdiacenti(Pos ultima){
+		List<Pos> result = new ArrayList<>();
+		for(int riga=-1; riga<=1;riga++) {
+			for(int colonna=-1; colonna<=1;colonna++) {
+				//tutte le 9 posizioni nell'intorno della cella
+				if(riga!=0 || colonna!=0) {
+					//escludo la cella stessa: basta che o la riga o la colonna siano diverse da zero affinché la cella mi interessi
+					Pos p = new Pos(ultima.getRow()+riga,ultima.getCol()+colonna);
+					if(positions.contains(p)) {
+						//se la posizione è contenuta nella board, fa parte degli adiacenti
+						result.add(p);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	

@@ -1,6 +1,8 @@
 package it.polito.tdp.Ruzzle.model;
 
 public class Pos {
+	
+	//classe che riassume la riga e la colonna di cui sto parlando (coordinata mettendo insieme due indici)
 	private int row;
 	private int col;
 
